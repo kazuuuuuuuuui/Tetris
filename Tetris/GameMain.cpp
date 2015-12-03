@@ -41,7 +41,11 @@ void specialkeydown(int key, int x, int y){
 }
 
 void display(){
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
+	//glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 
 	/*更新*/
 	camera->update();
@@ -50,7 +54,12 @@ void display(){
 
 
 	/*描画*/
-	flr->draw();
+	for (int i = 0; i < FLOOR_HEIGHT; i++){
+		for (int t = 0; t < FLOOR_WIDTH; t++){
+			flr[i][t]->draw();
+		}
+	}
+
 	block->draw();
 
 
@@ -77,7 +86,12 @@ void GLUT_CALLBACK_FUNC(){
 /*ゲーム開始時の初期化*/
 void init(){
 	camera = new oka::Camera();
-	flr = new Floor();
+
+	for (int i = 0; i < FLOOR_HEIGHT; i++){
+		for (int t = 0; t < FLOOR_WIDTH; t++){
+			flr[i][t] = new Floor({ 0.5f + 1.f*t, 0.5f + 1.f*i, 0.f });
+		}
+	}
 
 	block = new Block();
 }

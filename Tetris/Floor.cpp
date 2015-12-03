@@ -1,10 +1,7 @@
 #include"Floor.h"
 #include"glut.h"
 
-#define FLOOR_WIDTH (10)
-#define FLOOR_HEIGHT (20)
-
-Floor *flr = nullptr;
+Floor *flr[FLOOR_HEIGHT][FLOOR_WIDTH];
 
 void Floor::draw(){
 	/*(‰¼)*/
@@ -28,4 +25,17 @@ void Floor::draw(){
 		glVertex3f(FLOOR_WIDTH, i, 0);
 	}
 	glEnd();
+
+	glPushMatrix();
+	glColor3f(1, 1, 1);
+	glTranslatef(m_position.x, m_position.y, m_position.z);
+	glBegin(GL_QUADS);
+	{
+		glVertex3f(-0.5, 0.5, 0);
+		glVertex3f(-0.5, -0.5, 0);
+		glVertex3f(0.5, -0.5, 0);
+		glVertex3f(0.5, 0.5, 0);
+	}
+	glEnd();
+	glPopMatrix();
 }

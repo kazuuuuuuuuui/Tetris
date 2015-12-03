@@ -4,44 +4,14 @@
 #include<stdio.h>
 #include"oka_library\Camera.h"
 #include"Block.h"
-#include"Floor.h"
+#include"Feald.h"
 #include"glut.h"
 
-Block *block = nullptr;
-
-//回転の入力
-void keyboard(unsigned char key, int x, int y){
-
-	block->m_angle -= 90;
-
-}
-
-//矢印キーの入力
-void specialkeydown(int key, int x, int y){
-
-	switch (key){
-
-		//左に動く処理
-	case GLUT_KEY_LEFT:
-		block->m_position.x--;
-		break;
-
-		//右に動く処理
-	case GLUT_KEY_RIGHT:
-		block->m_position.x++;
-		break;
-
-		//下に動く処理
-	case GLUT_KEY_DOWN:
-		block->m_position.y--;
-		break;
-
-	}
-
-}
+int flameCounter = 0;
 
 void display(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_DEPTH_TEST);
 
 	//glEnable(GL_LIGHTING);
@@ -50,13 +20,14 @@ void display(){
 	/*更新*/
 	camera->update();
 
-	//block->update();
-
-
+	if (0 == flameCounter % 50){
+		block->update();
+	}
+	
 	/*描画*/
-	for (int i = 0; i < FLOOR_HEIGHT; i++){
-		for (int t = 0; t < FLOOR_WIDTH; t++){
-			flr[i][t]->draw();
+	for (int i = 0; i < FEALD_HEIGHT; i++){
+		for (int t = 0; t < FEALD_WIDTH; t++){
+			feald[i][t]->draw();
 		}
 	}
 
@@ -67,6 +38,8 @@ void display(){
 }
 
 void timer(int value){
+
+	flameCounter++;
 
 	glutPostRedisplay();
 	glutTimerFunc(
@@ -81,17 +54,35 @@ void GLUT_CALLBACK_FUNC(){
 	glutTimerFunc(0, timer, 0);
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(specialkeydown);
+
+	//押しっぱなし不可
+	glutIgnoreKeyRepeat(GL_TRUE);
 }
 
 /*ゲーム開始時の初期化*/
 void init(){
+
 	camera = new oka::Camera();
 
-	for (int i = 0; i < FLOOR_HEIGHT; i++){
-		for (int t = 0; t < FLOOR_WIDTH; t++){
-			flr[i][t] = new Floor({ 0.5f + 1.f*t, 0.5f + 1.f*i, 0.f });
+	//座標の初期化
+	for (int i = 0; i < FEALD_HEIGHT; i++){
+		for (int t = 0; t < FEALD_WIDTH; t++){
+			feald[i][t] = new Feald({ 0.5f + 1.f*t, 0.5f + 1.f*i, 0.f });
+			feald[i][t]->m_fealdType = NOTHING;
+
 		}
 	}
+
+	//壁処理
+	for (int t = 0; t < FEALD_WIDTH; t++){
+		feald[0][t]->m_fealdType = WALL;
+	}
+
+	for (int i = 0; i < FEALD_HEIGHT; i++){
+		feald[i][0]->m_fealdType = WALL;
+		feald[i][11]->m_fealdType = WALL;
+	}
+
 
 	block = new Block();
 }
@@ -104,9 +95,6 @@ int main(int argc, char *argv[]){
 	glutCreateWindow("Tetris");
 
 	GLUT_CALLBACK_FUNC();
-
-	//押しっぱなし不可
-	glutIgnoreKeyRepeat(GL_TRUE);
 
 	init();
 

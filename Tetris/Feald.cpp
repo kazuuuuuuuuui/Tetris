@@ -1,33 +1,40 @@
-#include"Floor.h"
+#include"Feald.h"
 #include"glut.h"
 
-Floor *flr[FLOOR_HEIGHT][FLOOR_WIDTH];
+Feald *feald[FEALD_HEIGHT][FEALD_WIDTH];
 
-void Floor::draw(){
+void Feald::draw(){
 	/*(âº)*/
 
 	//ècê¸
 	glBegin(GL_LINES);
-	for (float i = 0; i <= FLOOR_WIDTH; i++)
+	for (float i = 0; i <= FEALD_WIDTH; i++)
 	{
 		glColor3f(1, 0, 0);
 		glVertex3f(i, 0, 0);//(GLfloat x, GLfloat y, GLfloat z)
-		glVertex3f(i, FLOOR_HEIGHT, 0);
+		glVertex3f(i, FEALD_HEIGHT, 0);
 	}
 	glEnd();
 
 	//â°ê¸
 	glBegin(GL_LINES);
-	for (float i = 0; i <= FLOOR_HEIGHT; i++)
+	for (float i = 0; i <= FEALD_HEIGHT; i++)
 	{
 		glColor3f(0, 1, 0);
 		glVertex3f(0, i, 0);//(GLfloat x, GLfloat y, GLfloat z)
-		glVertex3f(FLOOR_WIDTH, i, 0);
+		glVertex3f(FEALD_WIDTH, i, 0);
 	}
 	glEnd();
 
 	glPushMatrix();
-	glColor3f(1, 1, 1);
+
+	if (NOTHING == m_fealdType){
+		glColor3f(1, 1, 1);
+	}
+	else if (WALL == m_fealdType){
+		glColor3f(174.f / 256.f, 174.f / 256.f, 174.f / 256.f);
+	}
+
 	glTranslatef(m_position.x, m_position.y, m_position.z);
 	glBegin(GL_QUADS);
 	{

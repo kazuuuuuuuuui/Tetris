@@ -1,14 +1,83 @@
-#include"Block.h"
+#include<conio.h>
 #include<random>
+#include"Block.h"
+#include"Feald.h"
 #include"glut.h"
 
+Block *block = nullptr;
+
 Block::Block(){
-	m_blockType = TYEPE0;
+	m_blockType = TYEPE3;
 	//m_blockType = rand() % 7;
 	m_angle = 0;
-	m_position.x = 0.5;
+	m_position.x = 5.5;
 	m_position.y = 10.5;
 	m_position.z = 0;
+}
+
+void checkBlockMoveLeft(){
+	for (int i = 0; i < FEALD_HEIGHT; i++){
+		for (int t = 0; t < FEALD_WIDTH; t++){
+			if (feald[i][t]->m_position == block->m_position && feald[i][t]->m_fealdType == WALL){
+				block->m_position.x++;
+			}
+		}
+	}
+}
+
+void checkBlockMoveRight(){
+	for (int i = 0; i < FEALD_HEIGHT; i++){
+		for (int t = 0; t < FEALD_WIDTH; t++){
+			if (feald[i][t]->m_position == block->m_position && feald[i][t]->m_fealdType == WALL){
+				block->m_position.x--;
+			}
+		}
+	}
+}
+
+void checkBlockMoveDown(){
+	for (int i = 0; i < FEALD_HEIGHT; i++){
+		for (int t = 0; t < FEALD_WIDTH; t++){
+			if (feald[i][t]->m_position == block->m_position && feald[i][t]->m_fealdType == WALL){
+				block->m_position.y++;
+			}
+		}
+	}
+}
+
+//âÒì]ÇÃì¸óÕ
+void keyboard(unsigned char key, int x, int y){
+
+	block->m_angle -= 90;
+
+}
+
+//ñÓàÛÉLÅ[ÇÃì¸óÕ
+void specialkeydown(int key, int x, int y){
+
+	switch (key){
+
+		//ç∂Ç…ìÆÇ≠èàóù
+	case GLUT_KEY_LEFT:
+		block->m_position.x--;
+		checkBlockMoveLeft();
+
+		break;
+
+		//âEÇ…ìÆÇ≠èàóù
+	case GLUT_KEY_RIGHT:
+		block->m_position.x++;
+		checkBlockMoveRight();
+
+		break;
+
+		//â∫Ç…ìÆÇ≠èàóù
+	case GLUT_KEY_DOWN:
+		block->m_position.y--;
+		checkBlockMoveDown();
+		break;
+
+	}
 }
 
 void Block::control(){
@@ -19,11 +88,11 @@ void Block::drawType0(){
 
 	//debug
 	//äÓèÄÇÕê‘
-	//glColor3f(1, 0, 0);
-
-	glColor3f(0, 0, 1);
+	glColor3f(1, 0, 0);
 
 	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
+
+	glColor3f(0, 0, 1);
 
 	glPushMatrix();
 	glTranslatef(0, 1, 0);
@@ -47,7 +116,7 @@ void Block::drawType1(){
 
 	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
 
-	glColor3f(1, 1, 1);
+	glColor3f(0, 0, 1);
 
 	glPushMatrix();
 	glTranslatef(0, 1, 0);
@@ -72,7 +141,7 @@ void Block::drawType2(){
 
 	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
 
-	glColor3f(1, 1, 1);
+	glColor3f(0, 0, 1);
 
 	glPushMatrix();
 	glTranslatef(0, 1, 0);
@@ -97,7 +166,7 @@ void Block::drawType3(){
 
 	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
 
-	glColor3f(1, 1, 1);
+	glColor3f(0, 0, 1);
 
 	glPushMatrix();
 	glTranslatef(-1, 0, 0);
@@ -122,7 +191,7 @@ void Block::drawType4(){
 
 	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
 
-	glColor3f(1, 1, 1);
+	glColor3f(0, 0, 1);
 
 	glPushMatrix();
 	glTranslatef(1, 0, 0);
@@ -147,7 +216,7 @@ void Block::drawType5(){
 
 	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
 
-	glColor3f(1, 1, 1);
+	glColor3f(0, 0, 1);
 
 	glPushMatrix();
 	glTranslatef(0, 1, 0);
@@ -172,7 +241,7 @@ void Block::drawType6(){
 
 	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
 
-	glColor3f(1, 1, 1);
+	glColor3f(0, 0, 1);
 
 	glPushMatrix();
 	glTranslatef(-1, 0, 0);
@@ -191,8 +260,6 @@ void Block::drawType6(){
 }
 
 void Block::draw(){
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 	glPushMatrix();
 	{
 		//test
@@ -271,5 +338,6 @@ void Block::draw(){
 }
 
 void Block::update(){
-	m_position.y--;
+	m_position.y -= 1;
+	checkBlockMoveDown();
 }

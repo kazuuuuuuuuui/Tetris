@@ -1,45 +1,58 @@
+/*描画はあくまでも描画用のバッファで行っているので注意*/
+
 #define WINDOW_WIDTH (900)
 #define WINDOW_HEIGHT (1000)
 
+#define FEALD_WIDTH (12)
+#define FEALD_HEIGHT (23)
+
 #include<stdio.h>
 #include"oka_library\Camera.h"
-#include"Block.h"
 #include"Feald.h"
 #include"glut.h"
 
-int flameCounter = 0;
+
+Feald *feald[FEALD_HEIGHT][FEALD_WIDTH];
+Feald *buffer[FEALD_HEIGHT][FEALD_WIDTH];
+
+
+//int flameCounter = 0;
 
 void display(){
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	//glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 
 	/*更新*/
 	camera->update();
 
-	if (0 == flameCounter % 50){
-		block->update();
-	}
-	
-	/*描画*/
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		for (int t = 0; t < FEALD_WIDTH; t++){
-			feald[i][t]->draw();
+	//if (0 == flameCounter % 50){
+	//	
+	//}
+
+
+	/**/
+	//描画用バッファにフィールド情報(m_type)を書き込む
+	for (int i = 0; i < FEALD_HEIGHT; i++) {
+		for (int t = 0; t < FEALD_WIDTH; t++) {
+			buffer[i][t]->m_type = feald[i][t]->m_type;
 		}
 	}
 
-	block->draw();
-
+	//フィールドバッファ描画
+	for (int i = 0; i < FEALD_HEIGHT; i++) {
+		for (int t = 0; t < FEALD_WIDTH; t++) {
+			buffer[i][t]->draw();
+		}
+	}
+	/**/
 
 	glFlush();
 }
 
 void timer(int value){
 
-	flameCounter++;
+	//flameCounter++;
 
 	glutPostRedisplay();
 	glutTimerFunc(
@@ -52,39 +65,46 @@ void timer(int value){
 void GLUT_CALLBACK_FUNC(){
 	glutDisplayFunc(display);
 	glutTimerFunc(0, timer, 0);
-	glutKeyboardFunc(keyboard);
-	glutSpecialFunc(specialkeydown);
+	//glutKeyboardFunc(keyboard);
+	//glutSpecialFunc(specialkeydown);
 
-	//押しっぱなし不可
-	glutIgnoreKeyRepeat(GL_TRUE);
+	////押しっぱなし不可
+	//glutIgnoreKeyRepeat(GL_TRUE);
 }
 
 /*ゲーム開始時の初期化*/
 void init(){
 
+	//カメラの生成
 	camera = new oka::Camera();
 
-	//座標の初期化
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		for (int t = 0; t < FEALD_WIDTH; t++){
-			feald[i][t] = new Feald({ 0.5f + 1.f*t, 0.5f + 1.f*i, 0.f });
-			feald[i][t]->m_fealdType = NOTHING;
-
+	//フィールドと描画用のバッファ生成
+	for (int i = 0; i < FEALD_HEIGHT; i++) {
+		for (int t = 0; t < FEALD_WIDTH; t++) {
+			feald[i][t] = new Feald();
+			buffer[i][t] = new Feald();
 		}
 	}
 
-	//壁処理
-	for (int t = 0; t < FEALD_WIDTH; t++){
-		feald[0][t]->m_fealdType = WALL;
+	//フィールドに壁の登録
+	for (int i = 0; i < FEALD_HEIGHT; i++) {
+		feald[i][0]->m_type = WALL;
+		feald[i][FEALD_WIDTH - 1]->m_type = WALL;
 	}
 
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		feald[i][0]->m_fealdType = WALL;
-		feald[i][11]->m_fealdType = WALL;
+	for (int t = 0; t < FEALD_WIDTH; t++) {
+		feald[FEALD_HEIGHT - 1][t]->m_type = WALL;
 	}
 
-
-	block = new Block();
+	//バッファマス目の座標設定
+	//左上を(0,0)
+	for (int i = 0; i < FEALD_HEIGHT; i++) {
+		for (int t = 0; t < FEALD_WIDTH; t++) {
+			buffer[i][t]->m_position.x = t * 2;
+			buffer[i][t]->m_position.y = i * (-2);
+			buffer[i][t]->m_position.z = 0;
+		}
+	}
 }
 
 
@@ -97,6 +117,15 @@ int main(int argc, char *argv[]){
 	GLUT_CALLBACK_FUNC();
 
 	init();
+
+	//test
+	//for (int i = 0; i < FEALD_HEIGHT; i++) {
+	//	for (int t = 0; t < FEALD_WIDTH; t++) {
+	//		//printf("%d", buffer[i][t]->m_type);
+	//		printf("buffer[%d][%d] x:%f y:%f \n", i, t, buffer[i][t]->m_position.x, buffer[i][t]->m_position.y);
+	//	}
+	//printf("\n");
+	//}
 
 	glutMainLoop();
 }

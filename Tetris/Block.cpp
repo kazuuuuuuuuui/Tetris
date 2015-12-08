@@ -227,10 +227,10 @@ void createBlock(){
 	//ランダムでブロックの種類を決定
 
 	blockType = rand() % 7;
-	
+
 	//test
 	//blockType = TYPE_I;
-	
+
 	posX = 4;
 	posY = 0;
 	rotate = 0;
@@ -325,12 +325,12 @@ void fallBlock(){
 
 //ブロックの消去
 void clearLine(){
-	for (int i = 21; i > 3; i--){
+	for (int i = FEALD_Y_BUTTOM; i > FEALD_Y_TOP; i--){
 		if (feald[i][1]->m_type == 1 && feald[i][2]->m_type == 1 && feald[i][3]->m_type == 1 && feald[i][4]->m_type == 1 &&
 			feald[i][5]->m_type == 1 && feald[i][6]->m_type == 1 && feald[i][7]->m_type == 1 && feald[i][8]->m_type == 1 &&
 			feald[i][9]->m_type == 1 && feald[i][10]->m_type == 1){
 			for (int t = 1; t < FEALD_WIDTH - 1; t++){
-				feald[i][t] = 0;
+				feald[i][t]->m_type = 0;
 			}
 		}
 	}

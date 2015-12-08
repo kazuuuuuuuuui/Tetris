@@ -4,6 +4,10 @@
 #define FEALD_WIDTH (12)
 #define FEALD_HEIGHT (25)
 
+#define FEALD_Y_TOP (3)
+#define FEALD_Y_BUTTOM (22)
+
+
 #include"glm\glm.hpp"
 #include"Block.h"
 

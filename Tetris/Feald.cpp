@@ -5,6 +5,8 @@
 Feald *feald[FEALD_HEIGHT][FEALD_WIDTH];
 Feald *buffer[FEALD_HEIGHT][FEALD_WIDTH];
 
+unsigned char *p = nullptr;
+
 Material white_plastic = {
 	{ 0.0, 0.0, 0.0, 1.0 },
 	{ 0.55, 0.55, 0.55, 1.0 },
@@ -134,12 +136,7 @@ void setCube(){
 		22, 23, 21  //’ê–Ê
 	};
 
-	glDrawElements(
-		GL_TRIANGLES,//GLenum mode
-		36,//GLsizei count
-		GL_UNSIGNED_BYTE,//GLenum type
-		indeces//const GLvoid *indices
-		);
+	p = indeces;
 }
 
 void Feald::draw(){

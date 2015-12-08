@@ -27,6 +27,7 @@ void createBlock();
 void fallBlock();
 bool isHit(char _bloak[][4][4], int _x, int _y, int _rotate);
 void lockBlock(char _bloak[][4][4], int _x, int _y, int _rotate);
+void clearLine();
 
 extern char currentBlock[RotateMax][4][4];
 extern int blockType;

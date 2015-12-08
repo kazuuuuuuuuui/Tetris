@@ -63,6 +63,7 @@ void specialkeydown(int key, int x, int y){
 	case GLUT_KEY_DOWN:
 		if (isHit(currentBlock, posX, posY + 1, rotate)){
 			lockBlock(currentBlock, posX, posY, rotate);
+			clearLine();
 		}
 		else{
 			posY++;
@@ -102,6 +103,7 @@ void display(){
 	if (0 == flameCounter % 50){
 		if (isHit(currentBlock, posX, posY + 1, rotate)){
 			lockBlock(currentBlock, posX, posY, rotate);
+			clearLine();
 		}
 		else{
 			fallBlock();
@@ -133,14 +135,20 @@ void display(){
 	}
 
 	//フィールドバッファ描画
-	
-	for (int i = 3; i < FEALD_HEIGHT - 1; i++) {
+	for (int i = FEALD_Y_TOP; i < FEALD_HEIGHT - 1; i++) {
 		for (int t = 0; t < FEALD_WIDTH; t++) {
 			buffer[i][t]->draw();
 		}
 	}
 
 	/**/
+
+	/*glPushMatrix();
+
+	glTranslatef(10, -15, 5);
+	glutSolidTeapot(1);
+
+	glPopMatrix();*/
 
 	glFlush();
 }
@@ -204,6 +212,8 @@ void init(){
 			buffer[i][t]->m_position.z = 0;
 		}
 	}
+
+	setCube();
 
 	//最初の1個目ブロック生成
 	createBlock();

@@ -1,50 +1,130 @@
 /*描画はあくまでも描画用のバッファで行っているので注意*/
+//memo lockした際のcreateしたあとにisHit(y-1)してtrueならゲームオーバー
 
 #define WINDOW_WIDTH (900)
 #define WINDOW_HEIGHT (1000)
-
-#define FEALD_WIDTH (12)
-#define FEALD_HEIGHT (23)
 
 #include<stdio.h>
 #include"oka_library\Camera.h"
 #include"Feald.h"
 #include"glut.h"
 
+int flameCounter = 0;
 
-Feald *feald[FEALD_HEIGHT][FEALD_WIDTH];
-Feald *buffer[FEALD_HEIGHT][FEALD_WIDTH];
+//回転の入力
+void keyboard(unsigned char key, int x, int y){
+	if ('a' == key){
+		if (isHit(currentBlock, posX, posY, ((rotate + 1) % RotateMax))){
+
+		}
+		else{
+			rotate++;
+			rotate = rotate%RotateMax;
+		}
+	}
+}
+
+//矢印キーの入力
+void specialkeydown(int key, int x, int y){
+
+	switch (key){
+
+		//左に動く処理
+	case GLUT_KEY_LEFT:
+		if (isHit(currentBlock, posX - 1, posY, rotate)){
+
+		}
+		else{
+			posX--;
+		}
+
+		break;
+
+		//右に動く処理
+	case GLUT_KEY_RIGHT:
+		if (isHit(currentBlock, posX + 1, posY, rotate)){
+
+		}
+		else{
+			posX++;
+		}
+
+		break;
+
+		//下に動く処理
+	case GLUT_KEY_DOWN:
+		if (isHit(currentBlock, posX, posY + 1, rotate)){
+			lockBlock(currentBlock, posX, posY, rotate);
+		}
+		else{
+			posY++;
+		}
+		break;
+
+	}
+}
 
 
-//int flameCounter = 0;
 
 void display(){
-	glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glClearColor(0, 0, 1, 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//深度テスト
+	glEnable(GL_DEPTH_TEST);
+
+	//カリング
+	//glEnable(GL_CULL_FACE);
+
+	//ライト
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 
 
 	/*更新*/
 	camera->update();
 
-	//if (0 == flameCounter % 50){
-	//	
-	//}
+	if (0 == flameCounter % 50){
+		if (isHit(currentBlock, posX, posY + 1, rotate)){
+			lockBlock(currentBlock, posX, posY, rotate);
+		}
+		else{
+			fallBlock();
+		}
+	}
 
 
-	/**/
-	//描画用バッファにフィールド情報(m_type)を書き込む
-	for (int i = 0; i < FEALD_HEIGHT; i++) {
-		for (int t = 0; t < FEALD_WIDTH; t++) {
+	//表示用バッファ初期化
+	for (int i = 0; i < FEALD_HEIGHT; i++){
+		for (int t = 0; t < FEALD_WIDTH; t++){
+			buffer[i][t]->m_type = NORMAL;
+		}
+	}
+
+	//描画用buffer更新
+	//フィールド情報
+	for (int i = 0; i < FEALD_HEIGHT; i++){
+		for (int t = 0; t < FEALD_WIDTH; t++){
 			buffer[i][t]->m_type = feald[i][t]->m_type;
 		}
 	}
 
+	//描画用buffer更新
+	//ブロック
+	for (int i = 0; i < 4; i++){
+		for (int t = 0; t < 4; t++){
+			buffer[i + posY][t + posX]->m_type = (buffer[i + posY][t + posX])->m_type | (currentBlock[rotate][i][t]);
+		}
+	}
+
 	//フィールドバッファ描画
-	for (int i = 0; i < FEALD_HEIGHT; i++) {
+	for (int i = 2; i < FEALD_HEIGHT; i++) {
 		for (int t = 0; t < FEALD_WIDTH; t++) {
 			buffer[i][t]->draw();
 		}
 	}
+
 	/**/
 
 	glFlush();
@@ -52,7 +132,7 @@ void display(){
 
 void timer(int value){
 
-	//flameCounter++;
+	flameCounter++;
 
 	glutPostRedisplay();
 	glutTimerFunc(
@@ -65,11 +145,11 @@ void timer(int value){
 void GLUT_CALLBACK_FUNC(){
 	glutDisplayFunc(display);
 	glutTimerFunc(0, timer, 0);
-	//glutKeyboardFunc(keyboard);
-	//glutSpecialFunc(specialkeydown);
+	glutKeyboardFunc(keyboard);
+	glutSpecialFunc(specialkeydown);
 
-	////押しっぱなし不可
-	//glutIgnoreKeyRepeat(GL_TRUE);
+	//押しっぱなし不可
+	glutIgnoreKeyRepeat(GL_TRUE);
 }
 
 /*ゲーム開始時の初期化*/
@@ -77,6 +157,9 @@ void init(){
 
 	//カメラの生成
 	camera = new oka::Camera();
+
+
+	//setCube();
 
 	//フィールドと描画用のバッファ生成
 	for (int i = 0; i < FEALD_HEIGHT; i++) {
@@ -105,8 +188,11 @@ void init(){
 			buffer[i][t]->m_position.z = 0;
 		}
 	}
-}
 
+	//最初の1個目ブロック生成
+	createBlock();
+
+}
 
 /*ゲームメイン*/
 int main(int argc, char *argv[]){

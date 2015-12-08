@@ -29,4 +29,9 @@ public:
 
 };
 
+void setCube();
+
+extern Feald *feald[FEALD_HEIGHT][FEALD_WIDTH];
+extern Feald *buffer[FEALD_HEIGHT][FEALD_WIDTH];
+
 #endif

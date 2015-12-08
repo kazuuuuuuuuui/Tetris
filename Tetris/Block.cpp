@@ -4,340 +4,363 @@
 #include"Feald.h"
 #include"glut.h"
 
-Block *block = nullptr;
-
-Block::Block(){
-	m_blockType = TYEPE3;
-	//m_blockType = rand() % 7;
-	m_angle = 0;
-	m_position.x = 5.5;
-	m_position.y = 10.5;
-	m_position.z = 0;
-}
-
-void checkBlockMoveLeft(){
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		for (int t = 0; t < FEALD_WIDTH; t++){
-			if (feald[i][t]->m_position == block->m_position && feald[i][t]->m_fealdType == WALL){
-				block->m_position.x++;
-			}
-		}
-	}
-}
-
-void checkBlockMoveRight(){
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		for (int t = 0; t < FEALD_WIDTH; t++){
-			if (feald[i][t]->m_position == block->m_position && feald[i][t]->m_fealdType == WALL){
-				block->m_position.x--;
-			}
-		}
-	}
-}
-
-void checkBlockMoveDown(){
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		for (int t = 0; t < FEALD_WIDTH; t++){
-			if (feald[i][t]->m_position == block->m_position && feald[i][t]->m_fealdType == WALL){
-				block->m_position.y++;
-			}
-		}
-	}
-}
-
-//回転の入力
-void keyboard(unsigned char key, int x, int y){
-
-	block->m_angle -= 90;
-
-}
-
-//矢印キーの入力
-void specialkeydown(int key, int x, int y){
-
-	switch (key){
-
-		//左に動く処理
-	case GLUT_KEY_LEFT:
-		block->m_position.x--;
-		checkBlockMoveLeft();
-
-		break;
-
-		//右に動く処理
-	case GLUT_KEY_RIGHT:
-		block->m_position.x++;
-		checkBlockMoveRight();
-
-		break;
-
-		//下に動く処理
-	case GLUT_KEY_DOWN:
-		block->m_position.y--;
-		checkBlockMoveDown();
-		break;
-
-	}
-}
-
-void Block::control(){
-
-}
-
-void Block::drawType0(){
-
-	//debug
-	//基準は赤
-	glColor3f(1, 0, 0);
-
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-
-	glColor3f(0, 0, 1);
-
-	glPushMatrix();
-	glTranslatef(0, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-
-	glTranslatef(0, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0, -1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-}
-
-void Block::drawType1(){
-
-	//debug
-	//基準は赤
-	glColor3f(1, 0, 0);
-
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-
-	glColor3f(0, 0, 1);
-
-	glPushMatrix();
-	glTranslatef(0, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0, -1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(1, -1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-}
-
-void Block::drawType2(){
-	//debug
-	//基準は赤
-	glColor3f(1, 0, 0);
-
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-
-	glColor3f(0, 0, 1);
-
-	glPushMatrix();
-	glTranslatef(0, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0, -1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(-1, -1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-}
-
-void Block::drawType3(){
-	//debug
-	//基準は赤
-	glColor3f(1, 0, 0);
-
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-
-	glColor3f(0, 0, 1);
-
-	glPushMatrix();
-	glTranslatef(-1, 0, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(1, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-}
-
-void Block::drawType4(){
-	//debug
-	//基準は赤
-	glColor3f(1, 0, 0);
-
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-
-	glColor3f(0, 0, 1);
-
-	glPushMatrix();
-	glTranslatef(1, 0, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(-1, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-}
-
-void Block::drawType5(){
-	//debug
-	//基準は赤
-	glColor3f(1, 0, 0);
-
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-
-	glColor3f(0, 0, 1);
-
-	glPushMatrix();
-	glTranslatef(0, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(1, 0, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(1, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-}
-
-void Block::drawType6(){
-	//debug
-	//基準は赤
-	glColor3f(1, 0, 0);
-
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-
-	glColor3f(0, 0, 1);
-
-	glPushMatrix();
-	glTranslatef(-1, 0, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(1, 0, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0, 1, 0);
-	glDrawElements(GL_TRIANGLES, INDECIES, GL_UNSIGNED_INT, m_index);
-	glPopMatrix();
-}
-
-void Block::draw(){
-	glPushMatrix();
+//o型
+char type_O[RotateMax][4][4] = {
 	{
-		//test
-		//float ambient[4] = { 0.1745, 0.01175, 0.01175, 1.0 };
-		//float diffuse[4] = { 0.61424, 0.04136, 0.04136, 1.0 };
-		//float specular[4] = { 0.727811, 0.626959, 0.626959, 1.0 };
-		//float shininess = 76.8;
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
 
-		//glMaterialfv(
-		//	GL_FRONT,   // GLenum face
-		//	GL_AMBIENT, // GLenum pname
-		//	ambient);   // const GLfloat *params
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 0, 0 }
+	}
 
-		//glMaterialfv(
-		//	GL_FRONT,   // GLenum face
-		//	GL_DIFFUSE, // GLenum pname
-		//	diffuse);   // const GLfloat *params
+};
 
-		//glMaterialfv(
-		//	GL_FRONT,   // GLenum face
-		//	GL_SPECULAR,// GLenum pname
-		//	specular);  // const GLfloat *params
+//I型
+char type_I[RotateMax][4][4] = {
+	{
+		{ 0, 0, 0, 0 },
+		{ 1, 1, 1, 1 },
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 0, 0 }
+	},
 
-		//glMaterialf(
-		//	GL_FRONT,       // GLenum face
-		//	GL_SHININESS,   // GLenum pname
-		//	shininess);            // GLfloat param
+	{
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 0, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 1, 1, 1, 1 },
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 0, 0 }
+	}
 
+};
 
-		//ブロック全体の移動・回転
-		glTranslatef(m_position.x, m_position.y, m_position.z);
+//凸型
+char type_invT[RotateMax][4][4] = {
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 1, 0 },
+		{ 0, 1, 1, 1 },
+		{ 0, 0, 0, 0 }
+	},
 
-		glRotatef(m_angle, 0.0f, 0.0f, 1.0f);
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 1, 0 },
+		{ 0, 0, 1, 1 },
+		{ 0, 0, 1, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 1 },
+		{ 0, 0, 1, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 1, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 1, 0 }
+	}
 
-		//描画
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, 0, m_vertex);
+};
 
-		//ブロックの種類によって形が違う
-		switch (m_blockType){
+//L型
+char type_L[RotateMax][4][4] = {
+	{
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
 
-		case TYEPE0:
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 1 },
+		{ 0, 1, 0, 0 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 1, 0 },
+		{ 0, 0, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 0, 1 },
+		{ 0, 1, 1, 1 },
+		{ 0, 0, 0, 0 }
+	}
 
-			drawType0();
+};
 
-			break;
+//逆L型
+char type_invL[RotateMax][4][4] = {
+	{
+		{ 0, 0, 1, 0 },
+		{ 0, 0, 1, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
 
-		case TYEPE1:
-			drawType1();
-			break;
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 1, 1 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 1, 1, 0 },
+		{ 0, 1, 0, 0 },
+		{ 0, 1, 0, 0 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 1 },
+		{ 0, 0, 0, 1 },
+		{ 0, 0, 0, 0 }
+	}
 
-		case TYEPE2:
-			drawType2();
-			break;
+};
 
-		case TYEPE3:
-			drawType3();
-			break;
+//Z型
+char type_Z[RotateMax][4][4] = {
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 1, 1 },
+		{ 0, 0, 0, 0 }
+	},
 
-		case TYEPE4:
-			drawType4();
-			break;
+	{
+		{ 0, 0, 0, 1 },
+		{ 0, 0, 1, 1 },
+		{ 0, 0, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 1, 1 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 0, 0, 1 },
+		{ 0, 0, 1, 1 },
+		{ 0, 0, 1, 0 },
+		{ 0, 0, 0, 0 }
+	}
 
-		case TYEPE5:
-			drawType5();
-			break;
+};
 
-		case TYEPE6:
-			drawType6();
-			break;
+//逆Z型
+char type_invZ[RotateMax][4][4] = {
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 1, 1 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
+
+	{
+		{ 0, 0, 1, 0 },
+		{ 0, 0, 1, 1 },
+		{ 0, 0, 0, 1 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 0, 0, 0 },
+		{ 0, 0, 1, 1 },
+		{ 0, 1, 1, 0 },
+		{ 0, 0, 0, 0 }
+	},
+	{
+		{ 0, 0, 1, 0 },
+		{ 0, 0, 1, 1 },
+		{ 0, 0, 0, 1 },
+		{ 0, 0, 0, 0 }
+	}
+
+};
+
+//ブロックのx,yと回転
+//curentBlockは現在落下してるBlock
+char currentBlock[RotateMax][4][4];
+int blockType;
+int posX;
+int posY;
+int rotate;
+
+//ブロック生成
+void createBlock(){
+	//ランダムでブロックの種類を決定
+
+	//blockType = rand() % 7;
+	blockType = TYPE_L;
+	posX = 4;
+	posY = 0;
+	rotate = 0;
+
+	//現在のブロック初期化
+	for (int i = 0; i < 4; i++){
+		for (int t = 0; t < 4; t++){
+			for (int u = 0; u < RotateMax; u++){
+				currentBlock[u][i][t] = 0;
+			}
 		}
 	}
 
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glPopMatrix();
+	switch (blockType){
+	case TYPE_O:
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				for (int u = 0; u < RotateMax; u++){
+					currentBlock[u][i][t] = currentBlock[u][i][t] | type_O[u][i][t];
+				}
+			}
+		}
+		break;
+
+	case TYPE_I:
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				for (int u = 0; u < RotateMax; u++){
+					currentBlock[u][i][t] = currentBlock[u][i][t] | type_I[u][i][t];
+				}
+			}
+		}
+		break;
+
+	case TYPE_invT:
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				for (int u = 0; u < RotateMax; u++){
+					currentBlock[u][i][t] = currentBlock[u][i][t] | type_invT[u][i][t];
+				}
+			}
+		}
+		break;
+
+	case TYPE_L:
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				for (int u = 0; u < RotateMax; u++){
+					currentBlock[u][i][t] = currentBlock[u][i][t] | type_L[u][i][t];
+				}
+			}
+		}
+		break;
+
+	case TYPE_invL:
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				for (int u = 0; u < RotateMax; u++){
+					currentBlock[u][i][t] = currentBlock[u][i][t] | type_invL[u][i][t];
+				}
+			}
+		}
+		break;
+
+	case TYPE_Z:
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				for (int u = 0; u < RotateMax; u++){
+					currentBlock[u][i][t] = currentBlock[u][i][t] | type_Z[u][i][t];
+				}
+			}
+		}
+		break;
+
+	case TYPE_invZ:
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				for (int u = 0; u < RotateMax; u++){
+					currentBlock[u][i][t] = currentBlock[u][i][t] | type_invZ[u][i][t];
+				}
+			}
+		}
+		break;
+	}
+
 }
 
-void Block::update(){
-	m_position.y -= 1;
-	checkBlockMoveDown();
+//ブロックの自由落下
+void fallBlock(){
+	posY++;
 }
+
+//ブロックの消去
+void clearLine(){
+	for (int i = 21; i > 3; i--){
+		if (feald[i][1]->m_type == 1 && feald[i][2]->m_type == 1 && feald[i][3]->m_type == 1 && feald[i][4]->m_type == 1 &&
+			feald[i][5]->m_type == 1 && feald[i][6]->m_type == 1 && feald[i][7]->m_type == 1 && feald[i][8]->m_type == 1 &&
+			feald[i][9]->m_type == 1 && feald[i][10]->m_type == 1){
+			for (int t = 1; t < FEALD_WIDTH - 1; t++){
+				feald[i][t] = 0;
+			}
+		}
+	}
+}
+
+//当たり判定
+bool isHit(char _bloak[][4][4], int _x, int _y, int _rotate){
+	for (int i = 0; i < 4; i++){
+		for (int t = 0; t < 4; t++){
+			if (_bloak[_rotate][i][t] && feald[_y + i][_x + t]->m_type){
+				return true;
+			}
+			else{
+
+			}
+		}
+	}
+
+	return false;
+}
+
+//ブロック固定
+void lockBlock(char _bloak[][4][4], int _x, int _y, int _rotate){
+	for (int i = 0; i < 4; i++){
+		for (int t = 0; t < 4; t++){
+			feald[_y + i][_x + t]->m_type = (feald[_y + i][_x + t]->m_type) | (_bloak[_rotate][i][t]);
+		}
+	}
+
+	//新しいブロックを生成
+	createBlock();
+}
+
+//	void Block::update(){
+//	m_position.y -= 1;
+//}

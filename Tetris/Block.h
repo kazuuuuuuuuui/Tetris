@@ -2,46 +2,37 @@
 #define BLOCK_H_
 
 #include"glm\glm.hpp"
-#include"Cube.h"
 
-enum {
-	TYEPE0,//–_
-	TYEPE1,//Lš
-	TYEPE2,//‹tLš
-	TYEPE3,//Zš
-	TYEPE4,//‹tZš
-	TYEPE5,//lŠp
-	TYEPE6//“Ê
+enum{
+	Rotate0 = 0,
+	Rotate90,
+	Rotate180,
+	Rotate270,
+	RotateMax
 };
 
-class Block :public Cube{
-public:
-	glm::vec3 m_position;
-	int m_angle;
-	int m_blockType;
 
-	void control();
-
-	//Šeí—Ş‚ÌƒuƒƒbƒN•`‰æ
-	void drawType0();
-	void drawType1();
-	void drawType2();
-	void drawType3();
-	void drawType4();
-	void drawType5();
-	void drawType6();
-
-	//ƒuƒƒbƒN©‘Ì‚Ì•`‰æ
-	void draw();
-
-	void update();
-
-	Block();
+enum{
+	TYPE_O ,
+	TYPE_I,
+	TYPE_invT,
+	TYPE_L,
+	TYPE_invL,
+	TYPE_Z,
+	TYPE_invZ
 };
 
-void keyboard(unsigned char key, int x, int y);
-void specialkeydown(int key, int x, int y);
 
-extern Block *block;
+void createBlock();
+void fallBlock();
+bool isHit(char _bloak[][4][4], int _x, int _y, int _rotate);
+void lockBlock(char _bloak[][4][4], int _x, int _y, int _rotate);
+
+extern char currentBlock[RotateMax][4][4];
+extern int blockType;
+extern int posX;
+extern int posY;
+extern int rotate;
+
 
 #endif

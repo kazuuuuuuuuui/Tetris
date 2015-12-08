@@ -11,6 +11,9 @@
 
 int flameCounter = 0;
 
+//test
+bool debugFlag = false;
+
 //回転の入力
 void keyboard(unsigned char key, int x, int y){
 	if ('a' == key){
@@ -21,6 +24,11 @@ void keyboard(unsigned char key, int x, int y){
 			rotate++;
 			rotate = rotate%RotateMax;
 		}
+	}
+
+	//test
+	if ('d' == key){
+		debugFlag = !debugFlag;
 	}
 }
 
@@ -64,12 +72,18 @@ void specialkeydown(int key, int x, int y){
 	}
 }
 
-
-
 void display(){
 	glClearColor(0, 0, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//test
+	if (debugFlag == false){
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
 
 	//深度テスト
 	glEnable(GL_DEPTH_TEST);
@@ -119,7 +133,8 @@ void display(){
 	}
 
 	//フィールドバッファ描画
-	for (int i = 2; i < FEALD_HEIGHT; i++) {
+	
+	for (int i = 3; i < FEALD_HEIGHT - 1; i++) {
 		for (int t = 0; t < FEALD_WIDTH; t++) {
 			buffer[i][t]->draw();
 		}
@@ -176,6 +191,7 @@ void init(){
 	}
 
 	for (int t = 0; t < FEALD_WIDTH; t++) {
+		feald[FEALD_HEIGHT - 2][t]->m_type = WALL;
 		feald[FEALD_HEIGHT - 1][t]->m_type = WALL;
 	}
 

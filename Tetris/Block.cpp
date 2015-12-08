@@ -226,8 +226,11 @@ int rotate;
 void createBlock(){
 	//ランダムでブロックの種類を決定
 
-	//blockType = rand() % 7;
-	blockType = TYPE_L;
+	blockType = rand() % 7;
+	
+	//test
+	//blockType = TYPE_I;
+	
 	posX = 4;
 	posY = 0;
 	rotate = 0;
@@ -360,7 +363,3 @@ void lockBlock(char _bloak[][4][4], int _x, int _y, int _rotate){
 	//新しいブロックを生成
 	createBlock();
 }
-
-//	void Block::update(){
-//	m_position.y -= 1;
-//}

@@ -2,7 +2,7 @@
 #define FEALD_H_
 
 #define FEALD_WIDTH (12)
-#define FEALD_HEIGHT (23)
+#define FEALD_HEIGHT (25)
 
 #include"glm\glm.hpp"
 #include"Block.h"

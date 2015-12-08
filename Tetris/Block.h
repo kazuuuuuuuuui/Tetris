@@ -13,7 +13,7 @@ enum{
 
 
 enum{
-	TYPE_O ,
+	TYPE_O = 0,
 	TYPE_I,
 	TYPE_invT,
 	TYPE_L,

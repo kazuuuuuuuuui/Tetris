@@ -11,11 +11,6 @@
 #include"glm\glm.hpp"
 #include"Block.h"
 
-enum{
-	NORMAL = 0,
-	WALL
-};
-
 class Feald{
 public:
 	char m_type;

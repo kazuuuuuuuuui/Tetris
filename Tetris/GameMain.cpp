@@ -5,6 +5,8 @@
 #define WINDOW_HEIGHT (1000)
 
 #include<stdio.h>
+#include<time.h>
+#include<vector>
 #include"oka_library\Camera.h"
 #include"Feald.h"
 #include"glut.h"
@@ -26,10 +28,27 @@ void keyboard(unsigned char key, int x, int y){
 		}
 	}
 
-	//test
+	//debug
 	if ('d' == key){
 		debugFlag = !debugFlag;
 	}
+
+	if ('u' == key){
+		camera->m_position.m_y += 0.5f;
+	}
+
+	if ('h' == key){
+		camera->m_position.m_x -= 0.5f;
+	}
+	if ('j' == key){
+		camera->m_position.m_y -= 0.5f;
+	}
+
+	if ('k' == key){
+		camera->m_position.m_x += 0.5f;
+	}
+
+
 }
 
 //矢印キーの入力
@@ -74,7 +93,7 @@ void specialkeydown(int key, int x, int y){
 }
 
 void display(){
-	glClearColor(0, 0, 1, 1);
+	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//test
@@ -143,13 +162,6 @@ void display(){
 
 	/**/
 
-	/*glPushMatrix();
-
-	glTranslatef(10, -15, 5);
-	glutSolidTeapot(1);
-
-	glPopMatrix();*/
-
 	glFlush();
 }
 
@@ -171,12 +183,14 @@ void GLUT_CALLBACK_FUNC(){
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(specialkeydown);
 
-	//押しっぱなし不可
-	glutIgnoreKeyRepeat(GL_TRUE);
+	//押しっぱなし可
+	glutIgnoreKeyRepeat(GL_FALSE);
 }
 
 /*ゲーム開始時の初期化*/
 void init(){
+	//ブロック生成の乱数のシードを変える
+	srand((unsigned)time(NULL));
 
 	//カメラの生成
 	camera = new oka::Camera();
@@ -213,7 +227,6 @@ void init(){
 		}
 	}
 
-	setCube();
 
 	//最初の1個目ブロック生成
 	createBlock();

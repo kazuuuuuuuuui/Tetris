@@ -11,9 +11,11 @@ enum{
 	RotateMax
 };
 
-
+//1ブロック単位で見た時の種類
 enum{
-	TYPE_O = 0,
+	NORMAL = 0,
+	WALL,
+	TYPE_O,
 	TYPE_I,
 	TYPE_invT,
 	TYPE_L,

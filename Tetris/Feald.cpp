@@ -1,5 +1,5 @@
 #include"Feald.h"
-#include"Material.h"
+#include"oka_library\Material.h"
 #include"glut.h"
 
 Feald *feald[FEALD_HEIGHT][FEALD_WIDTH];
@@ -274,11 +274,9 @@ void Feald::draw(){
 	//マテリアルを決める
 	switch (m_type){
 	case NORMAL:
-	
-		glMaterialfv(GL_FRONT, GL_AMBIENT, white_plastic.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, white_plastic.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, white_plastic.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, white_plastic.shininess);
+
+		//glMaterialfv(GL_FRONT, GL_AMBIENT, white_plastic.ambient);
+		white_plastic.setMaterial();
 
 		glBegin(GL_QUADS);
 		{
@@ -291,14 +289,11 @@ void Feald::draw(){
 		glEnd();
 
 		break;
-	
+
 
 	case WALL:
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, obsidian.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, obsidian.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, obsidian.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, obsidian.shininess);
+		obsidian.setMaterial();
 
 		//ブロック描画
 		glPushMatrix();
@@ -315,10 +310,7 @@ void Feald::draw(){
 
 	case TYPE_O:
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, bronze.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, bronze.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, bronze.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, bronze.shininess);
+		bronze.setMaterial();
 
 		//ブロック描画
 		glPushMatrix();
@@ -335,10 +327,7 @@ void Feald::draw(){
 
 	case TYPE_I:
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, green_rubber.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, green_rubber.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, green_rubber.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, green_rubber.shininess);
+		green_rubber.setMaterial();
 
 		//ブロック描画
 		glPushMatrix();
@@ -355,10 +344,7 @@ void Feald::draw(){
 
 	case TYPE_invT:
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, cyan_plastic.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, cyan_plastic.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, cyan_plastic.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, cyan_plastic.shininess);
+		cyan_plastic.setMaterial();
 
 		//ブロック描画
 		glPushMatrix();
@@ -375,10 +361,7 @@ void Feald::draw(){
 
 	case TYPE_L:
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, blue_plastic.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, blue_plastic.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, blue_plastic.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, blue_plastic.shininess);
+		blue_plastic.setMaterial();
 
 		//ブロック描画
 		glPushMatrix();
@@ -395,10 +378,7 @@ void Feald::draw(){
 
 	case TYPE_invL:
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, yellowGreen.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellowGreen.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, yellowGreen.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, yellowGreen.shininess);
+		yellowGreen.setMaterial();
 
 		//ブロック描画
 		glPushMatrix();
@@ -415,10 +395,7 @@ void Feald::draw(){
 
 	case TYPE_Z:
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, ruby.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, ruby.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, ruby.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, ruby.shininess);
+		ruby.setMaterial();
 
 		//ブロック描画
 		glPushMatrix();
@@ -435,10 +412,7 @@ void Feald::draw(){
 
 	case TYPE_invZ:
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT, green_plastic.ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, green_plastic.diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, green_plastic.specular);
-		glMaterialf(GL_FRONT, GL_SHININESS, green_plastic.shininess);
+		green_plastic.setMaterial();
 
 		//ブロック描画
 		glPushMatrix();
@@ -455,6 +429,6 @@ void Feald::draw(){
 
 	}
 
-	
+
 
 }

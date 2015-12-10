@@ -4,6 +4,18 @@
 #include"Feald.h"
 #include"glut.h"
 
+//ゲームのスコア
+//下ボタンを押すと増加
+//ブロックを消すと増加
+int gameScore;
+
+//消した総行数
+int deleteLinesNumber;
+
+//最初は0で消した行数が10増えるとlevelが1増える
+//levelが増えると自由落下の速度が早くなる
+int gameLevel;
+
 //o型
 char type_O[RotateMax][4][4] = {
 	{
@@ -226,12 +238,10 @@ int rotate;
 void createBlock(){
 	//ランダムでブロックの種類を決定(2～8の値を取得)
 
-	blockType = (rand() % 7) + 2;
-
-	printf("%d\n", blockType);
+	//blockType = (rand() % 7) + 2;
 
 	//test
-	//blockType = TYPE_invZ;
+	blockType = TYPE_I;
 
 	posX = 4;
 	posY = 0;
@@ -325,8 +335,15 @@ void fallBlock(){
 	posY++;
 }
 
+//ライン消去処理の際に一度に消える行の数
+int deleteLineCount = 0;
+
 //ブロックの消去
 void clearLine(){
+
+	//カウント初期化
+	deleteLineCount = 0;
+
 	for (int i = FEALD_Y_TOP; i <= FEALD_Y_BUTTOM; i++){
 		if (feald[i][1]->m_type != NORMAL && feald[i][2]->m_type != NORMAL && feald[i][3]->m_type != NORMAL && feald[i][4]->m_type != NORMAL &&
 			feald[i][5]->m_type != NORMAL && feald[i][6]->m_type != NORMAL && feald[i][7]->m_type != NORMAL && feald[i][8]->m_type != NORMAL &&
@@ -342,9 +359,41 @@ void clearLine(){
 				}
 			}
 
-
-
+			deleteLineCount++;
 		}
+	}
+
+	//消した行数更新
+	deleteLinesNumber += deleteLineCount;
+
+
+	//スコアの加算
+	switch (deleteLineCount){
+	case 1:
+		gameScore += 100;
+
+		break;
+
+
+	case 2:
+		gameScore += 300;
+
+		break;
+
+
+	case 3:
+		gameScore += 500;
+
+		break;
+
+	case 4:
+		gameScore += 1000;
+
+		break;
+
+	default:
+		break;
+
 	}
 }
 
@@ -371,7 +420,10 @@ void lockBlock(char _bloak[][4][4], int _x, int _y, int _rotate){
 			feald[_y + i][_x + t]->m_type = (feald[_y + i][_x + t]->m_type) | (_bloak[_rotate][i][t]);
 		}
 	}
-
-	//新しいブロックを生成
-	createBlock();
 }
+
+
+//ゲームオーバーのチェック
+//if (isHit(currentBlock, posX, posY + 1, rotate)){
+//	printf("Game Over\n");
+//}

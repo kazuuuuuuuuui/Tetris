@@ -3,6 +3,8 @@
 
 #include"glm\glm.hpp"
 
+class Feald;
+
 enum{
 	Rotate0 = 0,
 	Rotate90,
@@ -35,6 +37,8 @@ extern int gameScore;
 extern int deleteLinesNumber;
 extern int gameLevel;
 extern char currentBlock[RotateMax][4][4];
+extern Feald nextBlock[4][4];
+extern Feald nextNextBlock[4][4];
 extern int blockType;
 extern int posX;
 extern int posY;

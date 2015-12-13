@@ -1,4 +1,4 @@
-/*総消去行数が10をまたがって上がったときにレベルが上がらないバグ修正予定*/
+#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -12,14 +12,19 @@
 #include<vector>
 #include"oka_library\Camera.h"
 #include"oka_library\BmpImage.h"
-#include"oka_library\BitmapString.h"
+#include"oka_library\StrokeString.h"
 #include"Feald.h"
 #include"GameManager.h"
 #include"glut.h"
 
+void init();
+
+
+//テクスチャ
+GLuint titleTex;
+GLuint BackGroundTex;
 
 GameManager *gameManager = nullptr;
-
 
 //test
 bool debugFlag = false;
@@ -42,71 +47,69 @@ int fallSpeed;
 //1level上がるごとに増える自由落下の速度
 int fallSpeedIncrement;
 
-void gameOver(){
-	//表示用バッファ初期化
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		for (int t = 0; t < FEALD_WIDTH; t++){
-			buffer[i][t]->m_type = NORMAL;
-		}
-	}
-
-	//フィールドをブロックで埋め尽くす
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		for (int t = 0; t < FEALD_WIDTH; t++){
-			feald[i][t]->m_type = WALL;
-		}
-	}
-
-	//描画用buffer更新
-	//フィールド情報
-	for (int i = 0; i < FEALD_HEIGHT; i++){
-		for (int t = 0; t < FEALD_WIDTH; t++){
-			buffer[i][t]->m_type = feald[i][t]->m_type;
-		}
-	}
-
-	//フィールドバッファ描画
-	//for (int i = FEALD_Y_TOP; i < FEALD_HEIGHT - 1; i++) {
-	for (int i = 0; i < FEALD_HEIGHT - 1; i++) {
-		for (int t = 0; t < FEALD_WIDTH; t++) {
-			buffer[i][t]->draw();
-		}
-	}
-}
-
 //スコア・消したライン数・レベルを表示
 void printStatus(){
 
-	glColor3f(1, 1, 1);
+	//glColor3f(1, 0, 0);
+
+	glPushMatrix();
+	glTranslatef(212, 280, 0);
+	glScalef(0.12f, 0.12f, 0.12f);
+	StrokeString::print("NEXT");
+	glPopMatrix();
 
 	//スコア
-	glRasterPos2f(0.85, 0.3);
-	BitmapString::print("score");
-	glRasterPos2f(0.88, 0.27);
-	BitmapString::print(str_score);
+	glPushMatrix();
+	glTranslatef(238, 162, 0);
+	glScalef(0.1f, 0.1f, 0.1f);
+	StrokeString::print("SCORE");
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(238, 146, 0);
+	glScalef(0.1f, 0.1f, 0.1f);
+	StrokeString::print(str_score);
+	glPopMatrix();
 
 	//消した行総数
-	glRasterPos2f(0.85, 0.2);
-	BitmapString::print("LINES");
-	glRasterPos2f(0.88, 0.17);
-	BitmapString::print(str_deleteLine);
+	glPushMatrix();
+	glTranslatef(238, 128, 0);
+	glScalef(0.1f, 0.1f, 0.1f);
+	StrokeString::print("LINES");
+	glPopMatrix();
 
+	glPushMatrix();
+	glTranslatef(238, 110, 0);
+	glScalef(0.1f, 0.1f, 0.1f);
+	StrokeString::print(str_deleteLine);
+	glPopMatrix();
 
-	glRasterPos2f(0.85, 0.1);
-	BitmapString::print("LEVEL");
-	glRasterPos2f(0.88, 0.07);
-	BitmapString::print(str_gameLevel);
+	//消した行総数
+	glPushMatrix();
+	glTranslatef(238, 94, 0);
+	glScalef(0.1f, 0.1f, 0.1f);
+	StrokeString::print("LEVEL");
+	glPopMatrix();
 
+	glPushMatrix();
+	glTranslatef(238, 78, 0);
+	glScalef(0.1f, 0.1f, 0.1f);
+	StrokeString::print(str_gameLevel);
+	glPopMatrix();
 
-}
+	//操作方法
+	glPushMatrix();
+	glTranslatef(212, 30, 0);
+	glScalef(0.08f, 0.08f, 0.08f);
+	StrokeString::print("Move:ArrowKey");
+	glPopMatrix();
 
-//ゲームレベルをインクリメントさせるかの判定
-bool checkUpGameLevel(){
-	if (deleteLinesNumber != 0 && deleteLinesNumber % 10 == 0){
-		return true;
-	}
+	glPushMatrix();
+	glTranslatef(212, 14, 0);
+	glScalef(0.08f, 0.08f, 0.08f);
+	StrokeString::print("Rotate:SpaceKey");
+	glPopMatrix();
 
-	return false;
 }
 
 bool checkGameOver1(){
@@ -136,9 +139,24 @@ void keyboard(unsigned char key, int x, int y){
 	case TITLE:{
 
 		//スペースでゲームに進む
-		if (' ' == key){
+		if (NULL != key){
 			gameManager->m_scene = GAME;
 		}
+
+		//debug
+		/*if ('z' == key){
+			xx += 0.1f;
+		}
+
+		if ('x' == key){
+			yy += 0.1f;
+
+		}
+
+		if ('c' == key){
+			xx -= 0.1f;
+		}*/
+
 		break;
 	}
 
@@ -147,7 +165,7 @@ void keyboard(unsigned char key, int x, int y){
 		if (false == isGameOver){
 
 			//rで回転
-			if ('r' == key){
+			if (' ' == key){
 				if (isHit(currentBlock, posX, posY, ((rotate + 1) % RotateMax))){
 
 				}
@@ -159,8 +177,15 @@ void keyboard(unsigned char key, int x, int y){
 
 		}
 
+		if (true == isGameOver){
+			if (NULL != key){
+				init();
+				gameManager->m_scene = TITLE;
+			}
+		}
+
 		//debug
-		if ('d' == key){
+		/*if ('d' == key){
 			debugFlag = !debugFlag;
 		}
 
@@ -185,18 +210,33 @@ void keyboard(unsigned char key, int x, int y){
 
 		if ('m' == key){
 			camera->m_position.m_z += 0.5f;
-		}
+		}*/
 
-		if ('z' == key){
+		/*if ('z' == key){
 			camera->m_target.m_x -= 0.5f;
+			}
+
+			if ('x' == key){
+			camera->m_target.m_x += 0.5f;
+
+
+			}*/
+
+		/*f ('z' == key){
+			xx += 0.1f;
 		}
 
 		if ('x' == key){
-			camera->m_target.m_x += 0.5f;
+			yy += 0.1f;
+
 		}
 
-		printf("x: %f\ny: %f\nz: %f\n target.x: %f\n", camera->m_position.m_x, camera->m_position.m_y, camera->m_position.m_z, camera->m_target.m_x);
-		printf("\n");
+		if ('c' == key){
+			xx -= 0.1f;
+		}*/
+
+		/*printf("x: %f\ny: %f\nz: %f\n target.x: %f\n", camera->m_position.m_x, camera->m_position.m_y, camera->m_position.m_z, camera->m_target.m_x);
+		printf("\n");*/
 
 		break;
 	}
@@ -248,9 +288,11 @@ void specialkeydown(int key, int x, int y){
 					lockBlock(currentBlock, posX, posY, rotate);
 					clearLine();
 
-					if (checkUpGameLevel()){
+					/*if (checkUpGameLevel()){
 						gameLevel++;
-					}
+						}*/
+
+					gameLevel = deleteLinesNumber / 10;
 
 					createBlock();
 				}
@@ -263,15 +305,6 @@ void specialkeydown(int key, int x, int y){
 			}
 
 		}
-
-		break;
-	}
-
-	case RESULT:{
-
-
-
-
 
 		break;
 	}
@@ -299,7 +332,9 @@ void display(){
 			1, -1); // GLdouble zNear, zFar
 
 		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, titleTex);
 
+		//背景
 		glBegin(GL_QUADS);
 		{
 			glTexCoord2f(0.f, 0.f);
@@ -315,6 +350,35 @@ void display(){
 			glVertex2f(0.f, 1.f);
 		}
 		glEnd();
+
+		//タイトル
+		/*glEnable(GL_BLEND);
+		
+		glBlendFunc(
+			GL_SRC_ALPHA,
+			GL_ONE);
+
+		glColor4f(1, 1, 1, 1);
+
+		glPushMatrix();
+		glTranslatef(0.2, 0.6, 0);
+		glBegin(GL_QUADS);
+		{
+			glTexCoord2f(0.f, 0.f);
+			glVertex2f(0.f, 0.f);
+
+			glTexCoord2f(1.f, 0.f);
+			glVertex2f(0.6f, 0.f);
+
+			glTexCoord2f(1.f, 1.f);
+			glVertex2f(0.6f, 0.2f);
+
+			glTexCoord2f(0.f, 1.f);
+			glVertex2f(0.f, 0.2f);
+		}
+		glEnd();
+		glPopMatrix();
+		glDisable(GL_BLEND);*/
 
 		glDisable(GL_TEXTURE_2D);
 
@@ -346,16 +410,48 @@ void display(){
 		/*更新*/
 		camera->update();
 
+		//背景設定
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, BackGroundTex);
+
+		glPushMatrix();
+		glColor3f(1, 1, 1);
+		glTranslatef(-20, -55, -1);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(0, 0, 1);
+
+			glTexCoord2f(0.f, 0.f);
+			glVertex3f(0.f, 0.f, 0.f);
+
+			glTexCoord2f(1.f, 0.f);
+			glVertex3f(BACKGRUND_SIZE, 0.f, 0.f);
+
+			glTexCoord2f(1.f, 1.f);
+			glVertex3f(BACKGRUND_SIZE, BACKGRUND_SIZE, 0.f);
+
+			glTexCoord2f(0.f, 1.f);
+			glVertex3f(0.f, BACKGRUND_SIZE, 0.f);
+		}
+		glEnd();
+		glPopMatrix();
+
+		glDisable(GL_TEXTURE_2D);
+
 		if (false == isGameOver){
 
 			if (0 == gameManager->m_flameCounter % fallSpeed){
+				//if (0 == gameManager->m_flameCounter % 100){
 				if (isHit(currentBlock, posX, posY + 1, rotate)){
 					lockBlock(currentBlock, posX, posY, rotate);
+
 					clearLine();
 
-					if (checkUpGameLevel()){
+					/*if (checkUpGameLevel()){
 						gameLevel++;
-					}
+						}*/
+
+					gameLevel = deleteLinesNumber / 10;
 
 					//横一列処理後にブロック生成領域にブロックが置かれていたらゲームオーバー
 					if (checkGameOver1()){
@@ -374,41 +470,35 @@ void display(){
 				}
 			}
 
+		}
 
-			//背景設定
-			glEnable(GL_TEXTURE_2D);
-
-			glPushMatrix();
-			glColor3f(1, 1, 1);
-			glTranslatef(-20, -55, -1);
-			glBegin(GL_QUADS);
-			{
-				glNormal3f(0, 0, 1);
-
-				glTexCoord2f(0.f, 0.f);
-				glVertex3f(0.f, 0.f, 0.f);
-
-				glTexCoord2f(1.f, 0.f);
-				glVertex3f(BACKGRUND_SIZE, 0.f, 0.f);
-
-				glTexCoord2f(1.f, 1.f);
-				glVertex3f(BACKGRUND_SIZE, BACKGRUND_SIZE, 0.f);
-
-				glTexCoord2f(0.f, 1.f);
-				glVertex3f(0.f, BACKGRUND_SIZE, 0.f);
+		//次のブロック表示
+		glPushMatrix();
+		glScalef(0.8, 0.8, 0.8);
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				nextBlock[i][t].draw();
 			}
-			glEnd();
-			glPopMatrix();
+		}
 
-
-			glDisable(GL_TEXTURE_2D);
-
-			//表示用バッファ初期化
-			for (int i = 0; i < FEALD_HEIGHT; i++){
-				for (int t = 0; t < FEALD_WIDTH; t++){
-					buffer[i][t]->m_type = NORMAL;
-				}
+		//次の次のブロック表示
+		for (int i = 0; i < 4; i++){
+			for (int t = 0; t < 4; t++){
+				nextNextBlock[i][t].draw();
 			}
+		}
+		glPopMatrix();
+
+		/////////////////////////////////////
+
+		//表示用バッファ初期化
+		for (int i = 0; i < FEALD_HEIGHT; i++){
+			for (int t = 0; t < FEALD_WIDTH; t++){
+				buffer[i][t]->m_type = NORMAL;
+			}
+		}
+
+		if (isGameOver == false){
 
 			//描画用buffer更新
 			//フィールド情報
@@ -426,20 +516,29 @@ void display(){
 				}
 			}
 
-			//フィールドバッファ描画
-			//for (int i = FEALD_Y_TOP; i < FEALD_HEIGHT - 1; i++) {
-			for (int i = FEALD_Y_TOP; i < FEALD_HEIGHT - 1; i++) {
-				for (int t = 0; t < FEALD_WIDTH; t++) {
-					buffer[i][t]->draw();
-				}
-			}
-
 		}
 
 		else if (isGameOver == true){
+			for (int i = 0; i < FEALD_HEIGHT; i++){
+				for (int t = 0; t < FEALD_WIDTH; t++){
+					feald[i][t]->m_type = WALL;
+				}
+			}
 
-			gameOver();
+			//描画用buffer更新
+			//フィールド情報
+			for (int i = 0; i < FEALD_HEIGHT; i++){
+				for (int t = 0; t < FEALD_WIDTH; t++){
+					buffer[i][t]->m_type = feald[i][t]->m_type;
+				}
+			}
+		}
 
+		//フィールドバッファ描画
+		for (int i = FEALD_Y_TOP; i < FEALD_HEIGHT - 1; i++) {
+			for (int t = 0; t < FEALD_WIDTH; t++) {
+				buffer[i][t]->draw();
+			}
 		}
 
 		//2D画面上の処理
@@ -448,18 +547,28 @@ void display(){
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glOrtho(
-			0, 1,  // GLdouble left, right
-			0, 1,  // GLdouble bottom, top,
+			0, 300,  // GLdouble left, right
+			0, 300,  // GLdouble bottom, top,
 			1, -1); // GLdouble zNear, zFar
 
 		//スコア等の表示
 		printStatus();
 
+		if (isGameOver == true){
+			glPushMatrix();
+			glTranslatef(46, 140, 0);
+			glScalef(0.2f, 0.2f, 0.2f);
+			StrokeString::print("GAME OVER");
+			glPopMatrix();
 
-		break;
-	}
 
-	case RESULT:{
+			glPushMatrix();
+			glTranslatef(84, 100, 0);
+			glScalef(0.08f, 0.08f, 0.08f);
+			StrokeString::print("push any key");
+			glPopMatrix();
+
+		}
 
 		break;
 	}
@@ -507,7 +616,7 @@ void init(){
 	deleteLinesNumber = 0;
 	gameLevel = 0;
 	fallSpeedIncrement = 5;
-	
+
 
 	//落下速度の初期化
 	//値が小さくなるにつれ落下速度は速くなる
@@ -526,8 +635,8 @@ void init(){
 
 	//setCube();
 
-	BmpImage::loadImage("BMP/bg.bmp");
-
+	titleTex = BmpImage::loadImage("BMP/title.bmp");
+	BackGroundTex = BmpImage::loadImage("BMP/bg.bmp");
 
 	//フィールドと描画用のバッファ生成
 	for (int i = 0; i < FEALD_HEIGHT; i++) {
@@ -558,6 +667,23 @@ void init(){
 		}
 	}
 
+	//次の表示位置を設定
+	for (int i = 0; i < 4; i++) {
+		for (int t = 0; t < 4; t++) {
+			nextBlock[i][t].m_position.x = 31 + t * 2;
+			nextBlock[i][t].m_position.y = -8.5 + i*(-2);
+			nextBlock[i][t].m_position.z = 0;
+		}
+	}
+
+	//次の次の表示位置を設定
+	for (int i = 0; i < 4; i++) {
+		for (int t = 0; t < 4; t++) {
+			nextNextBlock[i][t].m_position.x = 31 + t * 2;
+			nextNextBlock[i][t].m_position.y = -17.5 + i*(-2);
+			nextNextBlock[i][t].m_position.z = 0;
+		}
+	}
 
 	//最初の1個目ブロック生成
 	createBlock();

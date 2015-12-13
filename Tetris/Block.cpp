@@ -226,10 +226,17 @@ char type_invZ[RotateMax][4][4] = {
 
 };
 
+Feald nextBlock[4][4];
+Feald nextNextBlock[4][4];
+
 //ブロックのx,yと回転
 //curentBlockは現在落下してるBlock
 char currentBlock[RotateMax][4][4];
-int blockType;
+
+
+int blockType = (rand() % 7) + 2;
+int nextBlockType = (rand() % 7) + 2;
+int nextNextBlockType = TYPE_O;
 int posX;
 int posY;
 int rotate;
@@ -238,10 +245,12 @@ int rotate;
 void createBlock(){
 	//ランダムでブロックの種類を決定(2～8の値を取得)
 
-	//blockType = (rand() % 7) + 2;
+	blockType = nextBlockType;
+	nextBlockType = nextNextBlockType;
+	nextNextBlockType = (rand() % 7) + 2;
 
 	//test
-	blockType = TYPE_I;
+	//blockType = TYPE_I;
 
 	posX = 4;
 	posY = 0;
@@ -256,78 +265,39 @@ void createBlock(){
 		}
 	}
 
-	switch (blockType){
-	case TYPE_O:
-		for (int i = 0; i < 4; i++){
-			for (int t = 0; t < 4; t++){
-				for (int u = 0; u < RotateMax; u++){
-					currentBlock[u][i][t] = currentBlock[u][i][t] | type_O[u][i][t];
-				}
-			}
-		}
-		break;
+	using arr = char(*)[4][4];///char(*)[4][4];
 
-	case TYPE_I:
-		for (int i = 0; i < 4; i++){
-			for (int t = 0; t < 4; t++){
-				for (int u = 0; u < RotateMax; u++){
-					currentBlock[u][i][t] = currentBlock[u][i][t] | type_I[u][i][t];
-				}
-			}
-		}
-		break;
+	arr pType[9] = {
+		nullptr,
+		nullptr,
+		type_O,
+		type_I,
+		type_invT,
+		type_L,
+		type_invL,
+		type_Z,
+		type_invZ
+	};
 
-	case TYPE_invT:
-		for (int i = 0; i < 4; i++){
-			for (int t = 0; t < 4; t++){
-				for (int u = 0; u < RotateMax; u++){
-					currentBlock[u][i][t] = currentBlock[u][i][t] | type_invT[u][i][t];
-				}
+	for (int i = 0; i < 4; i++){
+		for (int t = 0; t < 4; t++){
+			for (int u = 0; u < RotateMax; u++){
+				currentBlock[u][i][t] = pType[blockType][u][i][t];
 			}
 		}
-		break;
-
-	case TYPE_L:
-		for (int i = 0; i < 4; i++){
-			for (int t = 0; t < 4; t++){
-				for (int u = 0; u < RotateMax; u++){
-					currentBlock[u][i][t] = currentBlock[u][i][t] | type_L[u][i][t];
-				}
-			}
-		}
-		break;
-
-	case TYPE_invL:
-		for (int i = 0; i < 4; i++){
-			for (int t = 0; t < 4; t++){
-				for (int u = 0; u < RotateMax; u++){
-					currentBlock[u][i][t] = currentBlock[u][i][t] | type_invL[u][i][t];
-				}
-			}
-		}
-		break;
-
-	case TYPE_Z:
-		for (int i = 0; i < 4; i++){
-			for (int t = 0; t < 4; t++){
-				for (int u = 0; u < RotateMax; u++){
-					currentBlock[u][i][t] = currentBlock[u][i][t] | type_Z[u][i][t];
-				}
-			}
-		}
-		break;
-
-	case TYPE_invZ:
-		for (int i = 0; i < 4; i++){
-			for (int t = 0; t < 4; t++){
-				for (int u = 0; u < RotateMax; u++){
-					currentBlock[u][i][t] = currentBlock[u][i][t] | type_invZ[u][i][t];
-				}
-			}
-		}
-		break;
 	}
 
+	for (int i = 0; i < 4; i++){
+		for (int t = 0; t < 4; t++){
+			nextBlock[i][t].m_type = pType[nextBlockType][0][i][t];
+		}
+	}
+
+	for (int i = 0; i < 4; i++){
+		for (int t = 0; t < 4; t++){
+			nextNextBlock[i][t].m_type = pType[nextNextBlockType][0][i][t];
+		}
+	}
 }
 
 //ブロックの自由落下
@@ -421,9 +391,3 @@ void lockBlock(char _bloak[][4][4], int _x, int _y, int _rotate){
 		}
 	}
 }
-
-
-//ゲームオーバーのチェック
-//if (isHit(currentBlock, posX, posY + 1, rotate)){
-//	printf("Game Over\n");
-//}

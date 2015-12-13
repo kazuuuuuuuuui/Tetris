@@ -5,46 +5,9 @@
 Feald *feald[FEALD_HEIGHT][FEALD_WIDTH];
 Feald *buffer[FEALD_HEIGHT][FEALD_WIDTH];
 
+
+
 unsigned char *p = nullptr;
-
-//ゴム(緑)
-Material green_rubber = {
-	{ 0.0, 0.05, 0.0, 1.0 },
-	{ 0.4, 0.5, 0.4, 1.0 },
-	{ 0.04, 0.7, 0.04, 1.0 },
-	10.0 };
-
-//シアン
-Material cyan_plastic = {
-	{ 0.0, 0.1, 0.06, 1.0 },
-	{ 0.0, 0.50980392, 0.50980392, 1.0 },
-	{ 0.50196078, 0.50196078, 0.50196078, 1.0 },
-	32 };
-
-//プラスチック(青)
-Material blue_plastic = {
-	{ 0.0, 0.0, 0.0, 1.0 },
-	{ 0.0, 0.0, 1.0, 1.0 },
-	{ 0.0, 0.20, 0.50, 1.0 },
-	32 };
-
-Material yellowGreen = {
-	{ 0.0, 0.0, 0.0, 1.0 },
-	{ 0.0, 0.8, 0.3, 1.0 },
-	{ 0.0, 0.80, 0.30, 1.0 },
-	32 };
-
-Material ruby = {
-	{ 0.1745, 0.01175, 0.01175, 1.0 },
-	{ 0.61424, 0.04136, 0.04136, 1.0 },
-	{ 0.727811, 0.626959, 0.626959, 1.0 },
-	76.8 };
-
-Material green_plastic = {
-	{ 0.0, 0.0, 0.0, 1.0 },
-	{ 0.1, 0.35, 0.1, 1.0 },
-	{ 0.45, 0.55, 0.45, 1.0 },
-	32 };
 
 //ブロック用の立方体の登録
 void setCube(){
@@ -273,10 +236,10 @@ void Feald::draw(){
 
 	//マテリアルを決める
 	switch (m_type){
-	case NORMAL:
+	case NORMAL:{
 
-		//glMaterialfv(GL_FRONT, GL_AMBIENT, white_plastic.ambient);
-		white_plastic.setMaterial();
+		float diffuse[] = { 255 / 255.f, 255 / 255.f, 255 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 
 		glBegin(GL_QUADS);
 		{
@@ -289,28 +252,12 @@ void Feald::draw(){
 		glEnd();
 
 		break;
+	}
 
+	case WALL:{
 
-	case WALL:
-
-		obsidian.setMaterial();
-
-		//ブロック描画
-		glPushMatrix();
-		glTranslatef(m_position.x, m_position.y, m_position.z);
-		glDrawElements(
-			GL_TRIANGLES,//GLenum mode
-			36,//GLsizei count
-			GL_UNSIGNED_BYTE,//GLenum type
-			indeces//const GLvoid *indices
-			);
-		glPopMatrix();
-
-		break;
-
-	case TYPE_O:
-
-		bronze.setMaterial();
+		float diffuse[] = { 128 / 255.f, 128 / 255.f, 128 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 
 		//ブロック描画
 		glPushMatrix();
@@ -324,111 +271,143 @@ void Feald::draw(){
 		glPopMatrix();
 
 		break;
-
-	case TYPE_I:
-
-		green_rubber.setMaterial();
-
-		//ブロック描画
-		glPushMatrix();
-		glTranslatef(m_position.x, m_position.y, m_position.z);
-		glDrawElements(
-			GL_TRIANGLES,//GLenum mode
-			36,//GLsizei count
-			GL_UNSIGNED_BYTE,//GLenum type
-			indeces//const GLvoid *indices
-			);
-		glPopMatrix();
-
-		break;
-
-	case TYPE_invT:
-
-		cyan_plastic.setMaterial();
-
-		//ブロック描画
-		glPushMatrix();
-		glTranslatef(m_position.x, m_position.y, m_position.z);
-		glDrawElements(
-			GL_TRIANGLES,//GLenum mode
-			36,//GLsizei count
-			GL_UNSIGNED_BYTE,//GLenum type
-			indeces//const GLvoid *indices
-			);
-		glPopMatrix();
-
-		break;
-
-	case TYPE_L:
-
-		blue_plastic.setMaterial();
-
-		//ブロック描画
-		glPushMatrix();
-		glTranslatef(m_position.x, m_position.y, m_position.z);
-		glDrawElements(
-			GL_TRIANGLES,//GLenum mode
-			36,//GLsizei count
-			GL_UNSIGNED_BYTE,//GLenum type
-			indeces//const GLvoid *indices
-			);
-		glPopMatrix();
-
-		break;
-
-	case TYPE_invL:
-
-		yellowGreen.setMaterial();
-
-		//ブロック描画
-		glPushMatrix();
-		glTranslatef(m_position.x, m_position.y, m_position.z);
-		glDrawElements(
-			GL_TRIANGLES,//GLenum mode
-			36,//GLsizei count
-			GL_UNSIGNED_BYTE,//GLenum type
-			indeces//const GLvoid *indices
-			);
-		glPopMatrix();
-
-		break;
-
-	case TYPE_Z:
-
-		ruby.setMaterial();
-
-		//ブロック描画
-		glPushMatrix();
-		glTranslatef(m_position.x, m_position.y, m_position.z);
-		glDrawElements(
-			GL_TRIANGLES,//GLenum mode
-			36,//GLsizei count
-			GL_UNSIGNED_BYTE,//GLenum type
-			indeces//const GLvoid *indices
-			);
-		glPopMatrix();
-
-		break;
-
-	case TYPE_invZ:
-
-		green_plastic.setMaterial();
-
-		//ブロック描画
-		glPushMatrix();
-		glTranslatef(m_position.x, m_position.y, m_position.z);
-		glDrawElements(
-			GL_TRIANGLES,//GLenum mode
-			36,//GLsizei count
-			GL_UNSIGNED_BYTE,//GLenum type
-			indeces//const GLvoid *indices
-			);
-		glPopMatrix();
-
-		break;
-
 	}
 
 
+	case TYPE_O:{
 
+		float diffuse[] = { 255 / 255.f, 255 / 255.f, 33 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
+		//ブロック描画
+		glPushMatrix();
+		glTranslatef(m_position.x, m_position.y, m_position.z);
+		glDrawElements(
+			GL_TRIANGLES,//GLenum mode
+			36,//GLsizei count
+			GL_UNSIGNED_BYTE,//GLenum type
+			indeces//const GLvoid *indices
+			);
+		glPopMatrix();
+
+		break;
+	}
+
+	case TYPE_I:{
+
+		float diffuse[] = { 82 / 255.f, 226 / 255.f, 255 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
+
+		//ブロック描画
+		glPushMatrix();
+		glTranslatef(m_position.x, m_position.y, m_position.z);
+		glDrawElements(
+			GL_TRIANGLES,//GLenum mode
+			36,//GLsizei count
+			GL_UNSIGNED_BYTE,//GLenum type
+			indeces//const GLvoid *indices
+			);
+		glPopMatrix();
+
+		break;
+	}
+
+	case TYPE_invT:{
+
+		float diffuse[] = { 255 / 255.f, 27 / 255.f, 253 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
+		//ブロック描画
+		glPushMatrix();
+		glTranslatef(m_position.x, m_position.y, m_position.z);
+		glDrawElements(
+			GL_TRIANGLES,//GLenum mode
+			36,//GLsizei count
+			GL_UNSIGNED_BYTE,//GLenum type
+			indeces//const GLvoid *indices
+			);
+		glPopMatrix();
+
+		break;
+	}
+
+	case TYPE_L:{
+
+		float diffuse[] = { 255 / 255.f, 172 / 255.f, 50 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
+		//ブロック描画
+		glPushMatrix();
+		glTranslatef(m_position.x, m_position.y, m_position.z);
+		glDrawElements(
+			GL_TRIANGLES,//GLenum mode
+			36,//GLsizei count
+			GL_UNSIGNED_BYTE,//GLenum type
+			indeces//const GLvoid *indices
+			);
+		glPopMatrix();
+
+		break;
+	}
+
+	case TYPE_invL:{
+
+		float diffuse[] = { 22 / 255.f, 22 / 255.f, 203 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
+		//ブロック描画
+		glPushMatrix();
+		glTranslatef(m_position.x, m_position.y, m_position.z);
+		glDrawElements(
+			GL_TRIANGLES,//GLenum mode
+			36,//GLsizei count
+			GL_UNSIGNED_BYTE,//GLenum type
+			indeces//const GLvoid *indices
+			);
+		glPopMatrix();
+
+		break;
+	}
+
+	case TYPE_Z:{
+
+		float diffuse[] = { 241 / 255.f, 27 / 255.f, 27 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
+		//ブロック描画
+		glPushMatrix();
+		glTranslatef(m_position.x, m_position.y, m_position.z);
+		glDrawElements(
+			GL_TRIANGLES,//GLenum mode
+			36,//GLsizei count
+			GL_UNSIGNED_BYTE,//GLenum type
+			indeces//const GLvoid *indices
+			);
+		glPopMatrix();
+
+		break;
+	}
+
+	case TYPE_invZ:{
+
+		float diffuse[] = { 55 / 255.f, 255 / 255.f, 73 / 255.f, 1 };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
+		//ブロック描画
+		glPushMatrix();
+		glTranslatef(m_position.x, m_position.y, m_position.z);
+		glDrawElements(
+			GL_TRIANGLES,//GLenum mode
+			36,//GLsizei count
+			GL_UNSIGNED_BYTE,//GLenum type
+			indeces//const GLvoid *indices
+			);
+		glPopMatrix();
+
+		break;
+	}
+
+	}
+	
 }

@@ -233,10 +233,12 @@ Feald nextNextBlock[4][4];
 //curentBlockは現在落下してるBlock
 char currentBlock[RotateMax][4][4];
 
+char blockShadow[RotateMax][4][4];
+
 
 int blockType = (rand() % 7) + 2;
 int nextBlockType = (rand() % 7) + 2;
-int nextNextBlockType = TYPE_O;
+int nextNextBlockType=(rand() % 7) + 2;
 int posX;
 int posY;
 int rotate;
@@ -245,12 +247,11 @@ int rotate;
 void createBlock(){
 	//ランダムでブロックの種類を決定(2～8の値を取得)
 
+
 	blockType = nextBlockType;
 	nextBlockType = nextNextBlockType;
 	nextNextBlockType = (rand() % 7) + 2;
 
-	//test
-	//blockType = TYPE_I;
 
 	posX = 4;
 	posY = 0;
@@ -260,7 +261,16 @@ void createBlock(){
 	for (int i = 0; i < 4; i++){
 		for (int t = 0; t < 4; t++){
 			for (int u = 0; u < RotateMax; u++){
-				currentBlock[u][i][t] = 0;
+				currentBlock[u][i][t] = NORMAL;
+			}
+		}
+	}
+
+	//現在のブロックの影初期化
+	for (int i = 0; i < 4; i++){
+		for (int t = 0; t < 4; t++){
+			for (int u = 0; u < RotateMax; u++){
+				blockShadow[u][i][t] = NORMAL;
 			}
 		}
 	}
@@ -283,6 +293,7 @@ void createBlock(){
 		for (int t = 0; t < 4; t++){
 			for (int u = 0; u < RotateMax; u++){
 				currentBlock[u][i][t] = pType[blockType][u][i][t];
+				blockShadow[u][i][t] = pType[blockType][u][i][t];
 			}
 		}
 	}
@@ -318,16 +329,18 @@ void clearLine(){
 		if (feald[i][1]->m_type != NORMAL && feald[i][2]->m_type != NORMAL && feald[i][3]->m_type != NORMAL && feald[i][4]->m_type != NORMAL &&
 			feald[i][5]->m_type != NORMAL && feald[i][6]->m_type != NORMAL && feald[i][7]->m_type != NORMAL && feald[i][8]->m_type != NORMAL &&
 			feald[i][9]->m_type != NORMAL && feald[i][10]->m_type != NORMAL){
+
 			for (int t = 1; t < FEALD_WIDTH - 1; t++){
 				feald[i][t]->m_type = NORMAL;
 			}
 
 			//下に降ろす処理
-			for (int s = i - 1; s > FEALD_Y_TOP; s--){
+			for (int s = i - 1; s > FEALD_Y_TOP - 2; s--){
 				for (int u = 1; u < FEALD_WIDTH - 1; u++){
 					feald[s + 1][u]->m_type = feald[s][u]->m_type;
 				}
 			}
+
 
 			deleteLineCount++;
 		}
@@ -387,7 +400,7 @@ bool isHit(char _bloak[][4][4], int _x, int _y, int _rotate){
 void lockBlock(char _bloak[][4][4], int _x, int _y, int _rotate){
 	for (int i = 0; i < 4; i++){
 		for (int t = 0; t < 4; t++){
-			feald[_y + i][_x + t]->m_type = (feald[_y + i][_x + t]->m_type) | (_bloak[_rotate][i][t]);
+			feald[_y + i][_x + t]->m_type = (feald[_y + i][_x + t]->m_type) + (_bloak[_rotate][i][t]);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 
+//上から3つめに置くとダメ
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #define WINDOW_WIDTH (960)
@@ -45,7 +47,7 @@ char str_gameLevel[256];
 int fallSpeed;
 
 //1level上がるごとに増える自由落下の速度
-int fallSpeedIncrement;
+int fallSpeedIncrement = 5;
 
 //スコア・消したライン数・レベルを表示
 void printStatus(){
@@ -113,7 +115,7 @@ void printStatus(){
 }
 
 bool checkGameOver1(){
-	for (int i = 1; i >= 0; i--){
+	for (int i = 2; i >= 0; i--){
 		if (feald[i][1]->m_type != NORMAL || feald[i][2]->m_type != NORMAL || feald[i][3]->m_type != NORMAL || feald[i][4]->m_type != NORMAL ||
 			feald[i][5]->m_type != NORMAL || feald[i][6]->m_type != NORMAL || feald[i][7]->m_type != NORMAL || feald[i][8]->m_type != NORMAL ||
 			feald[i][9]->m_type != NORMAL || feald[i][10]->m_type != NORMAL){
@@ -142,21 +144,6 @@ void keyboard(unsigned char key, int x, int y){
 		if (NULL != key){
 			gameManager->m_scene = GAME;
 		}
-
-		//debug
-		/*if ('z' == key){
-			xx += 0.1f;
-		}
-
-		if ('x' == key){
-			yy += 0.1f;
-
-		}
-
-		if ('c' == key){
-			xx -= 0.1f;
-		}*/
-
 		break;
 	}
 
@@ -175,6 +162,37 @@ void keyboard(unsigned char key, int x, int y){
 				}
 			}
 
+
+			if ('u' == key){
+				camera->m_position.m_y += 0.5f;
+			}
+			if ('h' == key){
+				camera->m_position.m_x -= 0.5f;
+			}
+			if ('j' == key){
+				camera->m_position.m_y -= 0.5f;
+			}
+			if ('k' == key){
+				camera->m_position.m_x += 0.5f;
+			}
+			if ('n' == key){
+				camera->m_position.m_z -= 0.5f;
+			}
+			if ('m' == key){
+				camera->m_position.m_z += 0.5f;
+			}
+
+			if ('z' == key){
+				camera->m_target.m_y -= 0.5f;
+			}
+			if ('x' == key){
+				camera->m_target.m_y += 0.5f;
+			}
+
+
+
+
+
 		}
 
 		if (true == isGameOver){
@@ -183,61 +201,6 @@ void keyboard(unsigned char key, int x, int y){
 				gameManager->m_scene = TITLE;
 			}
 		}
-
-		//debug
-		/*if ('d' == key){
-			debugFlag = !debugFlag;
-		}
-
-		if ('u' == key){
-			camera->m_position.m_y += 0.5f;
-		}
-
-		if ('h' == key){
-			camera->m_position.m_x -= 0.5f;
-		}
-		if ('j' == key){
-			camera->m_position.m_y -= 0.5f;
-		}
-
-		if ('k' == key){
-			camera->m_position.m_x += 0.5f;
-		}
-
-		if ('n' == key){
-			camera->m_position.m_z -= 0.5f;
-		}
-
-		if ('m' == key){
-			camera->m_position.m_z += 0.5f;
-		}*/
-
-		/*if ('z' == key){
-			camera->m_target.m_x -= 0.5f;
-			}
-
-			if ('x' == key){
-			camera->m_target.m_x += 0.5f;
-
-
-			}*/
-
-		/*f ('z' == key){
-			xx += 0.1f;
-		}
-
-		if ('x' == key){
-			yy += 0.1f;
-
-		}
-
-		if ('c' == key){
-			xx -= 0.1f;
-		}*/
-
-		/*printf("x: %f\ny: %f\nz: %f\n target.x: %f\n", camera->m_position.m_x, camera->m_position.m_y, camera->m_position.m_z, camera->m_target.m_x);
-		printf("\n");*/
-
 		break;
 	}
 
@@ -285,16 +248,9 @@ void specialkeydown(int key, int x, int y){
 				//下に動く処理
 			case GLUT_KEY_DOWN:
 				if (isHit(currentBlock, posX, posY + 1, rotate)){
-					lockBlock(currentBlock, posX, posY, rotate);
-					clearLine();
-
-					/*if (checkUpGameLevel()){
-						gameLevel++;
-						}*/
 
 					gameLevel = deleteLinesNumber / 10;
 
-					createBlock();
 				}
 				else{
 					posY++;
@@ -353,10 +309,10 @@ void display(){
 
 		//タイトル
 		/*glEnable(GL_BLEND);
-		
+
 		glBlendFunc(
-			GL_SRC_ALPHA,
-			GL_ONE);
+		GL_SRC_ALPHA,
+		GL_ONE);
 
 		glColor4f(1, 1, 1, 1);
 
@@ -364,17 +320,17 @@ void display(){
 		glTranslatef(0.2, 0.6, 0);
 		glBegin(GL_QUADS);
 		{
-			glTexCoord2f(0.f, 0.f);
-			glVertex2f(0.f, 0.f);
+		glTexCoord2f(0.f, 0.f);
+		glVertex2f(0.f, 0.f);
 
-			glTexCoord2f(1.f, 0.f);
-			glVertex2f(0.6f, 0.f);
+		glTexCoord2f(1.f, 0.f);
+		glVertex2f(0.6f, 0.f);
 
-			glTexCoord2f(1.f, 1.f);
-			glVertex2f(0.6f, 0.2f);
+		glTexCoord2f(1.f, 1.f);
+		glVertex2f(0.6f, 0.2f);
 
-			glTexCoord2f(0.f, 1.f);
-			glVertex2f(0.f, 0.2f);
+		glTexCoord2f(0.f, 1.f);
+		glVertex2f(0.f, 0.2f);
 		}
 		glEnd();
 		glPopMatrix();
@@ -410,6 +366,8 @@ void display(){
 		/*更新*/
 		camera->update();
 
+		fallSpeed = 51 - fallSpeedIncrement * gameLevel;
+
 		//背景設定
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, BackGroundTex);
@@ -438,18 +396,13 @@ void display(){
 
 		glDisable(GL_TEXTURE_2D);
 
-		if (false == isGameOver){
 
+		if (isGameOver == false){
 			if (0 == gameManager->m_flameCounter % fallSpeed){
-				//if (0 == gameManager->m_flameCounter % 100){
 				if (isHit(currentBlock, posX, posY + 1, rotate)){
 					lockBlock(currentBlock, posX, posY, rotate);
 
 					clearLine();
-
-					/*if (checkUpGameLevel()){
-						gameLevel++;
-						}*/
 
 					gameLevel = deleteLinesNumber / 10;
 
@@ -468,6 +421,7 @@ void display(){
 				else{
 					fallBlock();
 				}
+
 			}
 
 		}
@@ -536,6 +490,8 @@ void display(){
 
 		//フィールドバッファ描画
 		for (int i = FEALD_Y_TOP; i < FEALD_HEIGHT - 1; i++) {
+
+
 			for (int t = 0; t < FEALD_WIDTH; t++) {
 				buffer[i][t]->draw();
 			}
@@ -571,6 +527,9 @@ void display(){
 		}
 
 		break;
+
+		glDisable(GL_LIGHTING);
+
 	}
 
 	}
@@ -579,6 +538,8 @@ void display(){
 }
 
 void timer(int value){
+
+	printf("%d\n", fallSpeed);
 
 	sprintf(str_score, "%d", gameScore);
 	sprintf(str_deleteLine, "%d", deleteLinesNumber);
@@ -614,14 +575,15 @@ void init(){
 
 	gameScore = 0;
 	deleteLinesNumber = 0;
+
+	//maxは10
 	gameLevel = 0;
-	fallSpeedIncrement = 5;
 
 
 	//落下速度の初期化
 	//値が小さくなるにつれ落下速度は速くなる
 	//初期値は50Fに1回呼ばれるくらいの速度
-	fallSpeed = 50 - fallSpeedIncrement * gameLevel;
+	fallSpeed = 51 - fallSpeedIncrement * gameLevel;
 
 	//ブロック生成の乱数のシードを変える
 	srand((unsigned)time(NULL));
